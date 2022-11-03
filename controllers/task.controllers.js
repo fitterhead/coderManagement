@@ -40,9 +40,9 @@ taskController.createTask = async (req, res, next) => {
 
 taskController.findTaskByFilter = async (req, res, next) => {
   const searchFilter = req.query;
-  const { name, status } = req.query;
-  console.log(name, "name");
-  console.log(status, "status");
+  // const { name, status } = req.query;
+  // console.log(name, "name");
+  // console.log(status, "status");
   const queryArray = Object.keys(searchFilter);
   // console.log(queryArray, "queryArray");
   try {
