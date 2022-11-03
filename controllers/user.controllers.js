@@ -40,9 +40,11 @@ userController.createUser = async (req, res, next) => {
  */
 
 userController.getUser = async (req, res, next) => {
+  const searchFilter = req.query;
+  const queryArray = Objects.keys(searchFilter)
   try {
-    const searchFilter = req.query;
-    const getUserList = await User.find(searchFilter).sort(["createdAt", -1]);
+    console.log(queryArray,"queryArray")
+    const getUserList = await User.find(searchFilter).sort([["createdAt", -1]]);
     sendResponse(res, 200, true, getUserList, null, "userListFind");
     //add more filter inside this part
   } catch (error) {

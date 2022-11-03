@@ -53,6 +53,8 @@ router.put(
 
 /* ----- 6. You could search all tasks of 1 member either by name or id ----- */
 
-router.get("/findtask", query().exists(), findAllTaskOfMember);
+router.get("/findtask", 
+// query().exists(),
+ findAllTaskOfMember);
 
 module.exports = router;

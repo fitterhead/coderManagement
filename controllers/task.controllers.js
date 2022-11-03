@@ -39,22 +39,20 @@ taskController.createTask = async (req, res, next) => {
  */
 
 taskController.findTaskByFilter = async (req, res, next) => {
+  const searchFilter = req.query;
+  const { name, status } = req.query;
+  console.log(name, "name");
+  console.log(status, "status");
+  const queryArray = Object.keys(searchFilter);
+  // console.log(queryArray, "queryArray");
   try {
-    const searchFilter = req.query;
-    console.log(searchFilter, "searchfiller");
-    if (
-      Object.keys(searchFilter).includes("status") ||
-      Object.keys(searchFilter).includes("name")
-    ) {
-      const findTaskByFilter = await Task.find(searchFilter).sort([
-        "createdAt",
-        -1,
-      ]);
-      sendResponse(res, 200, true, findTaskByFilter, null, "taskByFilterfound");
-    } else {
-      console.log("query is not valid");
-      sendResponse(res, 200, true, null, "taskByFilterfound");
+    const findTaskByFilter = await Task.find(searchFilter).sort([
+      ["createdAt", -1],
+    ]);
+    if (Object.keys(findTaskByFilter).length === 0) {
+      throw new AppError(401, "Bad request", "cant find filter");
     }
+    sendResponse(res, 200, true, findTaskByFilter, null, "taskByFilterfound");
   } catch (error) {
     next(error);
   }
@@ -148,7 +146,7 @@ taskController.unassignTaskToUser = async (req, res, next) => {
 /*                             update task status                             */
 /* -------------------------------------------------------------------------- */
 /**
- * @route PUT API/task/status/:id
+ * @route PUT API/tasks/status/:id
  * @description update task status
  * @access private
  */
@@ -158,7 +156,6 @@ taskController.updateStatus = async (req, res, next) => {
   const { id } = req.params;
   try {
     let updateTask = await Task.findById(id);
-    // console.log(updateTask, "updateTask");
     console.log(updateTask.status, "updateTask status");
     console.log(status, "status");
     console.log(id, "id");
@@ -189,15 +186,16 @@ taskController.updateStatus = async (req, res, next) => {
 /* -------------------------------------------------------------------------- */
 
 /**
- * @route GET API/task/findtask
+ * @route GET API/tasks/findtask/
  * @description You could search all tasks of 1 member
  * @access private
  */
 
 taskController.findAllTaskOfMember = async (req, res, next) => {
-  const id = req.query;
+  const data = req.query;
   try {
-    let taskList = await Task.findOne(id);
+    console.log(data, "assignee");
+    let taskList = await Task.find(data);
     const errors = validationResult(req);
     if (!errors)
       throw new AppError(
@@ -206,7 +204,7 @@ taskController.findAllTaskOfMember = async (req, res, next) => {
         "cant search all tasks of a staff"
       );
     console.log(taskList, "taskList");
-    sendResponse(res, 200, true, null, "taskByFilterfound");
+    sendResponse(res, 200, true, null, taskList, "taskByFilterfound");
   } catch (error) {
     next(error);
   }
