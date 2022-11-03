@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema(
 
     role: {
       type: String,
-      enum: ['employee', 'manager'],
+      enum: ["employee", "manager"],
       default: "employee",
       // required: true
     },
@@ -25,5 +25,5 @@ const userSchema = mongoose.Schema(
   }
 );
 //Create and export model
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("users", userSchema);
 module.exports = User;

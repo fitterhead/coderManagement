@@ -40,13 +40,16 @@ taskController.createTask = async (req, res, next) => {
 
 taskController.findTaskByFilter = async (req, res, next) => {
   const searchFilter = req.query;
+  console.log(searchFilter,"searchFilter")
   // const { name, status } = req.query;
   // console.log(name, "name");
   // console.log(status, "status");
   const queryArray = Object.keys(searchFilter);
   // console.log(queryArray, "queryArray");
   try {
-    const findTaskByFilter = await Task.find(searchFilter).sort([
+    // const findTaskByFilter = await Task.find(searchFilter)
+    const findTaskByFilter = await Task.find({searchFilter})
+    .sort([
       ["createdAt", -1],
     ]);
     if (Object.keys(findTaskByFilter).length === 0) {
