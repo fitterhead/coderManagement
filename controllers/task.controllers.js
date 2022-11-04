@@ -157,7 +157,7 @@ taskController.findAllTaskOfMember = async (req, res, next) => {
         "Bad request",
         "cant search all tasks of a staff"
       );
-    sendResponse(res, 200, true, null, taskList, "taskByFilterfound");
+    sendResponse(res, 200, true, taskList, null, "taskByFilterfound");
   } catch (error) {
     next(error);
   }

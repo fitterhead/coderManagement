@@ -102,7 +102,7 @@ router.put(
  * @route POST API/task
  * @description create task
  * @access private
- * @example http://localhost:8000/tasks/findtask/63629cc26654bb024cdac9f9
+ * @example https://coderschoolmanagement.herokuapp.com/tasks/findtask/63629cc26654bb024cdac9f9
  */
 
 router.get("/findtask/:assignee", param().exists(), findAllTaskOfMember);
