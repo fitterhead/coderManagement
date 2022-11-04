@@ -12,12 +12,7 @@ taskController.createTask = async (req, res, next) => {
   const errors = validationResult(req);
   console.log(errors, "error");
   try {
-    // console.log(importedData, "importedData");
     const taskCreated = await Task.create(importedData);
-    // console.log(taskCreated,"taskCreatedddd")
-
-    console.log(body, "body");
-    console.log(validationResult, "validationResult");
     sendResponse(res, 200, true, taskCreated, null, "TaskCreated");
   } catch (error) {
     next(error);
@@ -38,7 +33,6 @@ taskController.findTaskByFilter = async (req, res, next) => {
   console.log(searchFilter, "searchFilter");
   const queryArray = Object.keys(searchFilter);
   try {
-    // const findTaskByFilter = await Task.find(searchFilter)
     const findTaskByFilter = await Task.find({ searchFilter }).sort([
       ["createdAt", -1],
     ]);
@@ -65,7 +59,6 @@ taskController.findDescriptionById = async (req, res, next) => {
     const { id } = req.params;
     const errors = validationResult(req);
     if (!errors) throw new AppError(401, "Bad request", "id is not valid");
-    // const findDescriptionById = await Task.findById(searchFilter);
     const findDescriptionById = await Task.findById(id);
 
     const decription = await findDescriptionById.description;
@@ -83,15 +76,11 @@ taskController.assignTaskToUser = async (req, res, next) => {
   const { assignee } = req.body;
   const { id } = req.params;
   try {
-    console.log(assignee, "asignee");
-    console.log(id, "employeeId");
     const errors = validationResult(req);
     if (!errors) throw new AppError(401, "Bad request", "cant assign task");
     let updateTask = await Task.findById(id);
     updateTask.assignee = assignee;
-    console.log(updateTask.assignee, "update");
     updateTask = await updateTask.save();
-    // const updated = await car.findByIdAndUpdate(targetId, updateInfo, options);
     sendResponse(res, 200, true, updateTask, null, "taskAssigned");
   } catch (error) {
     next(error);
@@ -111,18 +100,13 @@ taskController.unassignTaskToUser = async (req, res, next) => {
   const { assignee } = req.body;
   const { id } = req.params;
   try {
-    console.log(assignee, "asignee");
-    console.log(id, "employeeId");
     const errors = validationResult(req);
     if (!errors) throw new AppError(401, "Bad request", "cant unassign task");
     let updateTask = await Task.findById(id);
-    console.log(updateTask, "updateTask.assignee");
     if (updateTask.assignee.toString() === assignee) {
       updateTask.assignee = undefined;
     }
     updateTask = await updateTask.save();
-    console.log(updateTask, "update");
-    // const updated = await car.findByIdAndUpdate(targetId, updateInfo, options);
     sendResponse(res, 200, true, updateTask, null, "taskUnassigned");
   } catch (error) {
     next(error);
@@ -132,11 +116,6 @@ taskController.unassignTaskToUser = async (req, res, next) => {
 /* -------------------------------------------------------------------------- */
 /*                             update task status                             */
 /* -------------------------------------------------------------------------- */
-/**
- * @route PUT API/tasks/status/:id
- * @description update task status
- * @access private
- */
 
 taskController.updateStatus = async (req, res, next) => {
   const { status } = req.body;
@@ -167,17 +146,10 @@ taskController.updateStatus = async (req, res, next) => {
 /*       6. You could search all tasks of 1 member either by name or id       */
 /* -------------------------------------------------------------------------- */
 
-/**
- * @route GET API/tasks/findtask/
- * @description You could search all tasks of 1 member
- * @access private
- */
-
 taskController.findAllTaskOfMember = async (req, res, next) => {
-  const data = req.query;
+  const asignee = req.params;
   try {
-    console.log(data, "assignee");
-    let taskList = await Task.find(data);
+    let taskList = await Task.find(asignee);
     const errors = validationResult(req);
     if (!errors)
       throw new AppError(
@@ -185,7 +157,6 @@ taskController.findAllTaskOfMember = async (req, res, next) => {
         "Bad request",
         "cant search all tasks of a staff"
       );
-    console.log(taskList, "taskList");
     sendResponse(res, 200, true, null, taskList, "taskByFilterfound");
   } catch (error) {
     next(error);

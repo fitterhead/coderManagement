@@ -1,11 +1,5 @@
 const express = require("express");
-const {
-  body,
-  validationResult,
-  oneOf,
-  param,
-  query,
-} = require("express-validator");
+const { body, oneOf, param, query } = require("express-validator");
 const {
   createTask,
   findTaskByFilter,
@@ -17,7 +11,9 @@ const {
 } = require("../controllers/task.controllers");
 const router = express.Router();
 
-/* ------ 1) Create a new task ----- */
+/* -------------------------------------------------------------------------- */
+/*                              Create a new task                             */
+/* -------------------------------------------------------------------------- */
 /**
  * @route POST API/tasks
  * @description create task
@@ -26,7 +22,9 @@ const router = express.Router();
  */
 router.post("/", body("name").exists(), createTask);
 
-/* ----------------- Browse your tasks with filter allowance ---------------- */
+/* -------------------------------------------------------------------------- */
+/*                   Browse your tasks with filter allowance                  */
+/* -------------------------------------------------------------------------- */
 /**
  * @route GET API/tasks
  * @description browse task
@@ -36,7 +34,9 @@ router.post("/", body("name").exists(), createTask);
 
 router.get("/", query().exists(), findTaskByFilter);
 
-/* ----------------------- find task decription by id ----------------------- */
+/* -------------------------------------------------------------------------- */
+/*                         find task decription by id                         */
+/* -------------------------------------------------------------------------- */
 /**
  * @route GET API/tasks/:id
  * @description create task
@@ -50,7 +50,9 @@ router.get(
   findDescriptionById
 );
 
-/* ----------- You could assign member to a task or unassign them ----------- */
+/* -------------------------------------------------------------------------- */
+/*             You could assign member to a task or unassign them             */
+/* -------------------------------------------------------------------------- */
 /**
  * @route PUT API/tasks/assign/:id
  * @description You could assign member to a task or unassign them
@@ -77,12 +79,14 @@ router.delete(
   unassignTaskToUser
 );
 
-/* --------------------------- update task status --------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                             update task status                             */
+/* -------------------------------------------------------------------------- */
 /**
  * @route PUT API/tasks/status/:id
  * @description update task status
  * @access private
-*
+ * @example https://coderschoolmanagement.herokuapp.com/tasks/status/635f46f17e9f03c31c6d26a6
  */
 
 router.put(
@@ -91,17 +95,16 @@ router.put(
   updateStatus
 );
 
-/* ----- 6. You could search all tasks of 1 member by id ----- */
+/* -------------------------------------------------------------------------- */
+/*                You could search all tasks of 1 member by id                */
+/* -------------------------------------------------------------------------- */
 /**
  * @route POST API/task
  * @description create task
  * @access private
+ * @example http://localhost:8000/tasks/findtask/63629cc26654bb024cdac9f9
  */
 
-router.get(
-  "/findtask",
-  // query().exists(),
-  findAllTaskOfMember
-);
+router.get("/findtask/:assignee", param().exists(), findAllTaskOfMember);
 
 module.exports = router;

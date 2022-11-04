@@ -22,13 +22,11 @@ const taskSchema = mongoose.Schema(
     isFinished: {
       type: Boolean,
       default: false,
-      // immutable: true,
       // required: true
     },
 
     assignee: {
       type: mongoose.SchemaTypes.ObjectId,
-      //   required: true,
       ref: "User",
     }, //one to one required
   },
