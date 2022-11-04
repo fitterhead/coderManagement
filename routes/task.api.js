@@ -18,43 +18,90 @@ const {
 const router = express.Router();
 
 /* ------ 1) Create a new task ----- */
-// router.post("/", body("name").isLowercase(), createTask);
+/**
+ * @route POST API/tasks
+ * @description create task
+ * @access private
+ * @example https://coderschoolmanagement.herokuapp.com/tasks
+ */
 router.post("/", body("name").exists(), createTask);
 
 /* ----------------- Browse your tasks with filter allowance ---------------- */
-router.get("/", body("name").exists(), findTaskByFilter);
+/**
+ * @route GET API/tasks
+ * @description browse task
+ * @access private
+ * @example GET https://coderschoolmanagement.herokuapp.com/tasks
+ */
+
+router.get("/", query().exists(), findTaskByFilter);
 
 /* ----------------------- find task decription by id ----------------------- */
+/**
+ * @route GET API/tasks/:id
+ * @description create task
+ * @access private
+ * @example https://coderschoolmanagement.herokuapp.com/tasks/description/636135bdc85afe8dca032827
+ */
+
 router.get(
-  "/description",
-  oneOf([body("_id").exists().isMongoId(), body("name").exists().isString()]),
+  "/description/:id",
+  oneOf([param().exists().isMongoId(), body("name").exists().isString()]),
   findDescriptionById
 );
 
 /* ----------- You could assign member to a task or unassign them ----------- */
+/**
+ * @route PUT API/tasks/assign/:id
+ * @description You could assign member to a task or unassign them
+ * @access private
+ * @example https://coderschoolmanagement.herokuapp.com/tasks/assign/635f47109494bad07a2f2d3d
+ */
+
 router.put(
-  "/:id",
+  "/assign/:id",
   oneOf([body("assignee").exists().isMongoId(), param().exists().isString()]),
   assignTaskToUser
 );
 
+/**
+ * @route PUT API/tasks/assign/:id
+ * @description You could unassign member to a task or unassign them
+ * @access private
+ * @example https://coderschoolmanagement.herokuapp.com/tasks/unassign/635f47109494bad07a2f2d3d
+ */
+
 router.delete(
-  "/:id",
+  "/unassign/:id",
   oneOf([body("assignee").exists().isMongoId(), param().exists().isString()]),
   unassignTaskToUser
 );
 
 /* --------------------------- update task status --------------------------- */
+/**
+ * @route PUT API/tasks/status/:id
+ * @description update task status
+ * @access private
+*
+ */
+
 router.put(
   "/status/:id",
   oneOf([body("status").exists(), param().exists().isString()]),
   updateStatus
 );
 
-/* ----- 6. You could search all tasks of 1 member either by name or id ----- */
+/* ----- 6. You could search all tasks of 1 member by id ----- */
+/**
+ * @route POST API/task
+ * @description create task
+ * @access private
+ */
 
-router.get("/findtask", 
-// query().exists(),
- findAllTaskOfMember);
+router.get(
+  "/findtask",
+  // query().exists(),
+  findAllTaskOfMember
+);
 
 module.exports = router;

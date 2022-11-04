@@ -10,7 +10,7 @@ const taskSchema = mongoose.Schema(
     description: {
       type: String,
       default: "blah blah",
-      required: true
+      required: true,
     },
 
     status: {
@@ -19,10 +19,10 @@ const taskSchema = mongoose.Schema(
       default: "pending",
     },
 
-    isDeleted: {
+    isFinished: {
       type: Boolean,
       default: false,
-      immutable: true,
+      // immutable: true,
       // required: true
     },
 

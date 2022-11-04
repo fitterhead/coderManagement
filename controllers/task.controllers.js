@@ -6,11 +6,6 @@ const taskController = {};
 /* -------------------------------------------------------------------------- */
 /*                               // create Task                               */
 /* -------------------------------------------------------------------------- */
-/**
- * @route POST API/task
- * @description create task
- * @access private
- */
 
 taskController.createTask = async (req, res, next) => {
   const importedData = req.body;
@@ -40,16 +35,11 @@ taskController.createTask = async (req, res, next) => {
 
 taskController.findTaskByFilter = async (req, res, next) => {
   const searchFilter = req.query;
-  console.log(searchFilter,"searchFilter")
-  // const { name, status } = req.query;
-  // console.log(name, "name");
-  // console.log(status, "status");
+  console.log(searchFilter, "searchFilter");
   const queryArray = Object.keys(searchFilter);
-  // console.log(queryArray, "queryArray");
   try {
     // const findTaskByFilter = await Task.find(searchFilter)
-    const findTaskByFilter = await Task.find({searchFilter})
-    .sort([
+    const findTaskByFilter = await Task.find({ searchFilter }).sort([
       ["createdAt", -1],
     ]);
     if (Object.keys(findTaskByFilter).length === 0) {
@@ -72,12 +62,11 @@ taskController.findTaskByFilter = async (req, res, next) => {
 
 taskController.findDescriptionById = async (req, res, next) => {
   try {
-    const searchFilter = req.body;
-    console.log(searchFilter, "searchFilter");
+    const { id } = req.params;
     const errors = validationResult(req);
     if (!errors) throw new AppError(401, "Bad request", "id is not valid");
     // const findDescriptionById = await Task.findById(searchFilter);
-    const findDescriptionById = await Task.findOne(searchFilter);
+    const findDescriptionById = await Task.findById(id);
 
     const decription = await findDescriptionById.description;
     sendResponse(res, 200, true, decription, null, "findDescriptionByIdfound");
@@ -89,11 +78,6 @@ taskController.findDescriptionById = async (req, res, next) => {
 /* -------------------------------------------------------------------------- */
 /*             You could assign member to a task or unassign them             */
 /* -------------------------------------------------------------------------- */
-/**
- * @route PUT API/tasks/:id
- * @description You could assign member to a task or unassign them
- * @access private
- */
 
 taskController.assignTaskToUser = async (req, res, next) => {
   const { assignee } = req.body;
@@ -159,21 +143,16 @@ taskController.updateStatus = async (req, res, next) => {
   const { id } = req.params;
   try {
     let updateTask = await Task.findById(id);
-    console.log(updateTask.status, "updateTask status");
-    console.log(status, "status");
-    console.log(id, "id");
     const errors = validationResult(req);
     if (!errors) throw new AppError(401, "Bad request", "cant update task");
     if (status === "pending" || status === "working" || status === "review") {
-      if (updateTask.isDeleted === true) {
-        console.log("status cant be updated");
+      if (updateTask.isFinished === true) {
       } else {
         updateTask.status = status;
       }
     } else {
+      updateTask.isFinished = true;
       updateTask.status = status;
-      updateTask.isDeleted = true;
-
       updateTask = await updateTask.save();
     }
 
