@@ -8,7 +8,9 @@ const {
 const router = express.Router();
 const { body, validationResult, query } = require("express-validator");
 
-/* ------ 1) Create a new user by user’s name. default role is employee ----- */
+/* -------------------------------------------------------------------------- */
+/*         Create a new user by user’s name. default role is employee         */
+/* -------------------------------------------------------------------------- */
 /**
  * @route POST API/users
  * @description create user
@@ -17,7 +19,9 @@ const { body, validationResult, query } = require("express-validator");
  */
 router.post("/", body("name").exists().isString(), createUser);
 
-/* --------------- 2) Browse for all your employee with filter -------------- */
+/* -------------------------------------------------------------------------- */
+/*                 2) Browse for all your employee with filter                */
+/* -------------------------------------------------------------------------- */Í
 
 /**
  * @route GET API/users
@@ -26,7 +30,5 @@ router.post("/", body("name").exists().isString(), createUser);
  *@example https://coderschoolmanagement.herokuapp.com/users?name=Chairman Meow
  */
 router.get("/", query().exists(), getUser);
-
-
 
 module.exports = router;
