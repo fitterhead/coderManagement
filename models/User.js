@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema(
       default: "employee",
       // required: true
     },
-    taskAssigned_referenceTo: {
+    assignee: {
       type: mongoose.SchemaTypes.ObjectId,
       //   required: true,
       ref: "Task",

@@ -8,18 +8,19 @@ const userController = {};
 /*                               // create user                               */
 /* -------------------------------------------------------------------------- */
 
-
 userController.createUser = async (req, res, next) => {
-  const errors = validationResult(req);
-  // const test = { name: "shinobu" };
-  const data = req.body;
-  // console.log(data, "data");
-  console.log(errors, "data");
-  if (!errors) throw new AppError(401, "Bad request", "no data");
-  // if (!data) throw new AppError(401, "Bad request", "no data");
-
   try {
-    const userCreated = await User.create(data);
+    const errors = validationResult(req);
+    console.log(errors, "errors");
+    if (errors.length) throw new AppError(401, "Bad request", "invalid input");
+    const allowUpdate = ["name", "role"];
+    const updates = req.body;
+    const updateKeys = Object.keys(updates);
+    const notAllow = updateKeys.filter((el) => !allowUpdate.includes(el));
+    if (notAllow.length) {
+      throw new AppError(401, "Bad request", "filter Input is not validated");
+    }
+    const userCreated = await User.create(updates);
     sendResponse(res, 200, true, userCreated, null, "userCreated");
   } catch (error) {
     next(error);
@@ -40,6 +41,5 @@ userController.getUser = async (req, res, next) => {
     next(error);
   }
 };
-
 
 module.exports = userController;

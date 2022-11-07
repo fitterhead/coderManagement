@@ -8,11 +8,25 @@ const taskController = {};
 /* -------------------------------------------------------------------------- */
 
 taskController.createTask = async (req, res, next) => {
-  const importedData = req.body;
-  const errors = validationResult(req);
-  console.log(errors, "error");
   try {
-    const taskCreated = await Task.create(importedData);
+    const errors = validationResult(req);
+    if (errors.length)
+      throw new AppError(401, "Bad request", errors, "invalid input");
+    const allowUpdate = [
+      "name",
+      "description",
+      "status",
+      "assignee",
+      "isFinished",
+      "assignee",
+    ];
+    const updates = req.body;
+    const updateKeys = Object.keys(updates);
+    const notAllow = updateKeys.filter((el) => !allowUpdate.includes(el));
+    if (notAllow.length) {
+      throw new AppError(401, "Bad request", "filter Input is not validated");
+    }
+    const taskCreated = await Task.create(updates);
     sendResponse(res, 200, true, taskCreated, null, "TaskCreated");
   } catch (error) {
     next(error);
@@ -157,7 +171,7 @@ taskController.findAllTaskOfMember = async (req, res, next) => {
         "Bad request",
         "cant search all tasks of a staff"
       );
-    sendResponse(res, 200, true, taskList, null, "taskByFilterfound");
+    sendResponse(res, 200, true, taskList, "taskByFilterfound");
   } catch (error) {
     next(error);
   }
