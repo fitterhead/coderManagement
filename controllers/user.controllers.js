@@ -11,7 +11,6 @@ const userController = {};
 userController.createUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    console.log(errors, "errors");
     if (errors.length) throw new AppError(401, "Bad request", "invalid input");
     const allowUpdate = ["name", "role"];
     const updates = req.body;
@@ -32,11 +31,18 @@ userController.createUser = async (req, res, next) => {
 /* -------------------------------------------------------------------------- */
 
 userController.getUser = async (req, res, next) => {
-  const searchFilter = req.query;
   try {
-    const getUserList = await User.find(searchFilter).sort([["createdAt", -1]]);
+    const errors = validationResult(req);
+    if (errors.length) throw new AppError(401, "Bad request", "invalid input");
+    const allowUpdate = ["name", "role"];
+    const updates = req.query;
+    const updateKeys = Object.keys(updates);
+    const notAllow = updateKeys.filter((el) => !allowUpdate.includes(el));
+    if (notAllow.length) {
+      throw new AppError(401, "Bad request", "filter Input is not validated");
+    }
+    const getUserList = await User.find(updates).sort([["createdAt", -1]]);
     sendResponse(res, 200, true, getUserList, null, "userListFind");
-    //add more filter inside this part
   } catch (error) {
     next(error);
   }

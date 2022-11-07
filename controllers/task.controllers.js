@@ -43,13 +43,23 @@ taskController.createTask = async (req, res, next) => {
  */
 
 taskController.findTaskByFilter = async (req, res, next) => {
-  const searchFilter = req.query;
-  console.log(searchFilter, "searchFilter");
-  const queryArray = Object.keys(searchFilter);
   try {
-    const findTaskByFilter = await Task.find({ searchFilter }).sort([
-      ["createdAt", -1],
-    ]);
+    const allowUpdate = [
+      "name",
+      "description",
+      "status",
+      "assignee",
+      "isFinished",
+      "assignee",
+    ];
+    const updates = req.query;
+    const updateKeys = Object.keys(updates);
+    const notAllow = updateKeys.filter((el) => !allowUpdate.includes(el));
+    if (notAllow.length) {
+      throw new AppError(401, "Bad request", "filter Input is not validated");
+    }
+
+    const findTaskByFilter = await Task.find(updates).sort([["createdAt", -1]]);
     if (Object.keys(findTaskByFilter).length === 0) {
       throw new AppError(401, "Bad request", "cant find filter");
     }
@@ -118,7 +128,7 @@ taskController.unassignTaskToUser = async (req, res, next) => {
     if (!errors) throw new AppError(401, "Bad request", "cant unassign task");
     let updateTask = await Task.findById(id);
     if (updateTask.assignee.toString() === assignee) {
-      updateTask.assignee = undefined;
+      updateTask.assignee = null;
     }
     updateTask = await updateTask.save();
     sendResponse(res, 200, true, updateTask, null, "taskUnassigned");

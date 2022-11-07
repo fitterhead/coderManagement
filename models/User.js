@@ -5,7 +5,7 @@ const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      // required: true
+      required: true,
     },
 
     role: {
@@ -16,9 +16,8 @@ const userSchema = mongoose.Schema(
     },
     assignee: {
       type: mongoose.SchemaTypes.ObjectId,
-      //   required: true,
       ref: "Task",
-    }, //one to one required
+    },
   },
   {
     timestamps: true,
